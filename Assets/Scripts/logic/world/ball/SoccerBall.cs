@@ -1,6 +1,6 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
-using utilities;
 using utilities.tools.mono;
 
 namespace logic.world.ball
@@ -16,10 +16,13 @@ namespace logic.world.ball
         private bool _isActive;
 
         private MagnusEffect _effect;
+
         private GameObject _go;
-        private bool _touch;
-        private float _despawnTimer;
+
+        //private bool _touched;
+        //private float _despawnTimer;
         private Action<SoccerBall> _returnToPool;
+        private IBallDespawnLogic _despawnLogic;
 
         protected override void MakeInit()
         {
@@ -27,6 +30,7 @@ namespace logic.world.ball
             _rb = GetComponent<Rigidbody>();
             _effect = new MagnusEffect(radius, airDensity);
             _isActive = true;
+            _despawnLogic = new BallDespawnLogic(this, _returnToPool, _rb);
         }
 
         private void FixedUpdate()
@@ -38,16 +42,7 @@ namespace logic.world.ball
                     _effect.ApplyEffect(_rb);
                 }
 
-                if (_touch && _despawnTimer < Time.time && !_despawnTimer.Approx(0))
-                {
-                    Debug.Log($"[BC] Despawn Timer check, despawn time: {_despawnTimer}, Time: {Time.time}");
-                    if (_rb.velocity.sqrMagnitude < 4f)
-                        _returnToPool?.Invoke(this);
-                    else
-                    {
-                        _despawnTimer = Time.time + 1;
-                    }
-                }
+                _despawnLogic.Update();
             }
         }
 
@@ -56,8 +51,8 @@ namespace logic.world.ball
             _rb.isKinematic = !b;
             _isActive = b;
             _go.SetActive(b);
-            _touch = false;
-            _despawnTimer = 0;
+
+            _despawnLogic.Reset();
         }
 
         public void OnDespawn(Action<SoccerBall> handler) => _returnToPool = handler;
@@ -70,11 +65,10 @@ namespace logic.world.ball
         private void OnCollisionEnter(Collision collision)
         {
             Debug.Log("[BC] Ball Collision Enter");
-            if (_isActive && _touch)
+            if (_isActive)
                 return;
 
-            _touch = true;
-            _despawnTimer = Time.time + 3;
+            _despawnLogic.TryTouch(3);
         }
 
 
