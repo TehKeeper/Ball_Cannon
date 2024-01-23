@@ -1,7 +1,6 @@
-﻿using logic.behaviour.shoot;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace logic.behaviour
+namespace logic.behaviour.shoot
 {
     public class LinearPower : ShootBehaviourBase
     {

@@ -1,4 +1,4 @@
-﻿namespace logic.behaviour
+﻿namespace logic.behaviour.shoot
 {
     public interface IShootBehaviour
     {

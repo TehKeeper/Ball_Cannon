@@ -2,28 +2,27 @@
 using UnityEngine;
 using utilities;
 
-namespace logic.world.ball
+namespace logic.world.ball.despawn
 {
     public class BallDespawnLogic : IBallDespawnLogic
     {
         private bool _touched;
         private readonly SoccerBall _ball;
-        private readonly Action<SoccerBall> _despawnHandler;
+        private Action<SoccerBall> _despawnHandler;
         private float _despawnTimer;
         private readonly Rigidbody _rb;
 
-        public BallDespawnLogic(SoccerBall ball, Action<SoccerBall> despawnHandler, Rigidbody rb)
+        public BallDespawnLogic(SoccerBall ball, Rigidbody rb)
         {
             _ball = ball;
-            _despawnHandler = despawnHandler;
             _rb = rb;
         }
 
         public void TryTouch(float t)
         {
-            if(_touched)
+            if (_touched)
                 return;
-            
+
             _touched = true;
             AddTime(3);
         }
@@ -40,7 +39,8 @@ namespace logic.world.ball
         {
             if (_touched && _despawnTimer < Time.time && !_despawnTimer.Approx(0))
             {
-                Debug.Log($"[BC] Despawn Timer check, despawn time: {_despawnTimer}, Time: {Time.time}");
+                Debug.Log(
+                    $"[BC] Despawn Timer check, despawn time: {_despawnTimer}, Time: {Time.time}, velocity: {_rb.velocity.sqrMagnitude}");
                 if (_rb.velocity.sqrMagnitude < 4f)
                     _despawnHandler?.Invoke(_ball);
                 else
@@ -49,5 +49,7 @@ namespace logic.world.ball
                 }
             }
         }
+
+        public void SetHandler(Action<SoccerBall> handler) => _despawnHandler = handler;
     }
 }

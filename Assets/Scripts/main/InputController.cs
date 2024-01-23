@@ -1,5 +1,6 @@
 using System;
 using logic.behaviour;
+using logic.behaviour.shoot;
 using Unity.VisualScripting;
 using UnityEngine;
 

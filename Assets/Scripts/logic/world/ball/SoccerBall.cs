@@ -1,4 +1,5 @@
 ﻿using System;
+using logic.world.ball.despawn;
 using Unity.VisualScripting;
 using UnityEngine;
 using utilities.tools.mono;
@@ -30,7 +31,7 @@ namespace logic.world.ball
             _rb = GetComponent<Rigidbody>();
             _effect = new MagnusEffect(radius, airDensity);
             _isActive = true;
-            _despawnLogic = new BallDespawnLogic(this, _returnToPool, _rb);
+            _despawnLogic = new BallDespawnLogic(this, _rb);
         }
 
         private void FixedUpdate()
@@ -55,7 +56,11 @@ namespace logic.world.ball
             _despawnLogic.Reset();
         }
 
-        public void OnDespawn(Action<SoccerBall> handler) => _returnToPool = handler;
+        public void OnDespawn(Action<SoccerBall> handler)
+        {
+            _returnToPool = handler;
+            _despawnLogic.SetHandler(handler);
+        }
 
         public void Shoot(float cannonForce, Vector3 direction)
         {
@@ -65,7 +70,7 @@ namespace logic.world.ball
         private void OnCollisionEnter(Collision collision)
         {
             Debug.Log("[BC] Ball Collision Enter");
-            if (_isActive)
+            if (!_isActive)
                 return;
 
             _despawnLogic.TryTouch(3);

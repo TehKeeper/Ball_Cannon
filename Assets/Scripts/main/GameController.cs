@@ -1,4 +1,5 @@
 using logic.behaviour;
+using logic.behaviour.shoot;
 using logic.world.ball;
 using logic.world.gate;
 using TMPro;
