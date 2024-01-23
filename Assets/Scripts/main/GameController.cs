@@ -27,7 +27,7 @@ namespace main
 
         protected override void MakeInit()
         {
-            
+            Cursor.visible = false;
             _launchPoint = cannonRoot.FindTransform("Cannon_Launch_Point");
             _scoreText = tf.FindComponent<TMP_Text>("Score Text");
             _gaugeFill = tf.FindComponent<Image>("GaugeMask");
