@@ -39,8 +39,8 @@ namespace logic.world.ball.despawn
         {
             if (_touched && _despawnTimer < Time.time && !_despawnTimer.Approx(0))
             {
-                Debug.Log(
-                    $"[BC] Despawn Timer check, despawn time: {_despawnTimer}, Time: {Time.time}, velocity: {_rb.velocity.sqrMagnitude}");
+                /*Debug.Log(
+                    $"[BC] Despawn Timer check, despawn time: {_despawnTimer}, Time: {Time.time}, velocity: {_rb.velocity.sqrMagnitude}");*/
                 if (_rb.velocity.sqrMagnitude < 4f)
                     _despawnHandler?.Invoke(_ball);
                 else
